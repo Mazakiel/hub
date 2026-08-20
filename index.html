@@ -1,55 +1,135 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mazakiel's games poc</title>
+  <title>Mazakiel's game POCs</title>
   <style>
-    :root { color-scheme: dark; }
+    :root {
+      --green: #00ff41;
+      --green-dim: #00a32e;
+      --green-faint: #004d15;
+      --bg: #050805;
+    }
     * { box-sizing: border-box; }
+    html, body { height: 100%; }
     body {
       margin: 0;
-      min-height: 100vh;
+      background: var(--bg);
+      color: var(--green);
+      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 24px;
-      background: #0a0a0f;
-      color: #e6e6ea;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      text-shadow: 0 0 6px rgba(0, 255, 65, 0.45);
     }
-    h1 { font-size: 1.6rem; margin: 0; letter-spacing: 0.05em; }
+    /* léger effet scanlines CRT */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom, rgba(0, 0, 0, 0) 0 2px, rgba(0, 0, 0, 0.22) 2px 4px);
+    }
+    #terminal {
+      width: min(90vw, 640px);
+      font-size: 15px;
+      line-height: 1.7;
+      padding: 20px 0;
+    }
+    .line { min-height: 1.7em; }
+    .dim { color: var(--green-dim); text-shadow: none; }
+    #header { font-size: 20px; letter-spacing: 1px; }
+    #divider { color: var(--green-faint); margin: 6px 0 12px; text-shadow: none; }
+    #projects { display: flex; flex-direction: column; gap: 2px; }
     .project {
-      display: flex; align-items: center; gap: 12px;
-      padding: 14px 20px;
-      border: 1px solid #2a2a35;
-      border-radius: 8px;
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      padding: 3px 8px;
       text-decoration: none;
-      color: #e6e6ea;
-      transition: border-color .15s, transform .15s;
+      color: inherit;
+      border-left: 2px solid transparent;
+      transition: background .12s, color .12s, border-color .12s;
     }
-    .project:hover { border-color: #4a8fff; transform: translateY(-1px); }
+    .project .arrow { width: 1.1em; color: var(--green-dim); }
     .project .name { font-weight: 600; }
-    .project .arrow { color: #8a8a96; }
+    .project .date { margin-left: auto; color: var(--green-dim); text-shadow: none; }
+    .project:hover {
+      background: rgba(0, 255, 65, 0.08);
+      border-left-color: var(--green);
+      color: #d0ffd0;
+    }
+    .project:hover .arrow { color: var(--green); }
+    .cursor { animation: blink 1s steps(1) infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+    @media (max-width: 480px) {
+      #terminal { font-size: 13px; }
+      #header { font-size: 16px; }
+    }
   </style>
 </head>
 <body>
-  <h1>Mazakiel's games poc</h1>
+  <div id="terminal">
+    <div class="line" id="header"></div>
+    <div class="line dim" id="sub"></div>
+    <div class="line" id="divider"></div>
+    <div id="projects"></div>
+    <div class="line" id="prompt"></div>
+  </div>
 
-  <a class="project" href="./path-to-eternity/">
-    <span class="name">path-to-eternity</span>
-    <span class="arrow">→</span>
-  </a>
+  <script>
+    // Triés par date, plus récents en premier.
+    const PROJECTS = [
+      { name: 'incremental',      url: './incremental/',      date: '2026-07-23' },
+      { name: 'symbiose-2026',    url: './symbiose-2026/',    date: '2026-06-19' },
+      { name: 'path-to-eternity', url: './path-to-eternity/', date: '2026-01-07' },
+    ];
 
-  <a class="project" href="./symbiose-2026/">
-    <span class="name">symbiose-2026</span>
-    <span class="arrow">→</span>
-  </a>
+    const $ = (id) => document.getElementById(id);
+    const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-  <a class="project" href="./incremental/">
-    <span class="name">incremental</span>
-    <span class="arrow">→</span>
-  </a>
+    // Construit les lignes projet (texte révélé ensuite par la machine à écrire).
+    const listEl = $('projects');
+    PROJECTS.forEach((p) => {
+      const a = document.createElement('a');
+      a.className = 'project';
+      a.href = p.url;
+      a.innerHTML =
+        '<span class="arrow"></span><span class="name"></span><span class="date"></span>';
+      a.dataset.name = p.name;
+      a.dataset.date = p.date;
+      listEl.appendChild(a);
+    });
+
+    async function typeInto(el, text, speed) {
+      for (const ch of text) {
+        el.textContent += ch;
+        await sleep(speed);
+      }
+    }
+
+    async function run() {
+      await typeInto($('header'), "Mazakiel's game POCs", 45);
+      await typeInto($('sub'), '$ mazakiel@dev ~ projects sorted by date', 18);
+      await typeInto($('divider'), '-'.repeat(46), 8);
+
+      for (const a of listEl.children) {
+        await typeInto(a.querySelector('.arrow'), '>', 40);
+        await typeInto(a.querySelector('.name'), a.dataset.name, 30);
+        await sleep(140);
+        await typeInto(a.querySelector('.date'), a.dataset.date, 22);
+      }
+
+      await typeInto($('prompt'), '$ ', 40);
+      const cursor = document.createElement('span');
+      cursor.className = 'cursor';
+      cursor.textContent = '█';
+      $('prompt').appendChild(cursor);
+    }
+
+    run();
+  </script>
 </body>
 </html>
