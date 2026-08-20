@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mazakiel · dev</title>
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      background: #0a0a0f;
+      color: #e6e6ea;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+    h1 { font-size: 1.6rem; margin: 0; letter-spacing: 0.05em; }
+    .sub { color: #8a8a96; font-size: 0.9rem; }
+    .project {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 20px;
+      border: 1px solid #2a2a35;
+      border-radius: 8px;
+      text-decoration: none;
+      color: #e6e6ea;
+      transition: border-color .15s, transform .15s;
+    }
+    .project:hover { border-color: #4a8fff; transform: translateY(-1px); }
+    .project .name { font-weight: 600; }
+    .project .arrow { color: #8a8a96; }
+  </style>
+</head>
+<body>
+  <h1>Mazakiel · dev</h1>
+  <p class="sub">POC de jeux — work in progress</p>
+
+  <a class="project" href="./incremental/">
+    <span class="name">incremental</span>
+    <span class="arrow">→</span>
+  </a>
+</body>
+</html>
