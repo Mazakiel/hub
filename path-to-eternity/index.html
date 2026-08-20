@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <!-- PWA Configuration -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Path to Eternity">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#4a90e2">
+  <meta name="description" content="Roguelike shooter game with customizable skills">
+
+  <title>Path to Eternity</title>
+
+  <!-- Icons -->
+  <link rel="icon" type="image/x-icon" href="./favicon.ico">
+  <link rel="icon" type="image/png" sizes="64x64" href="./assets/logo64.png">
+  <link rel="apple-touch-icon" href="./assets/icon-192.png">
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="./manifest.json">
+
+  <script type="module" crossorigin src="./assets/index-BY41kUMb.js"></script>
+  <link rel="modulepreload" crossorigin href="./assets/phaser-Czz4FBZH.js">
+  <link rel="stylesheet" crossorigin href="./assets/index-Dt5Z2zWE.css">
+</head>
+<body>
+  <!-- Phaser Game Container (Loading, Combat) -->
+  <div id="game-container">
+    <div id="game"></div>
+  </div>
+
+  <!-- HTML Menus (populated by MenuManager) -->
+  <div id="menu-container" class="hidden"></div>
+
+  <!-- Register Service Worker for PWA -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('Service Worker registered:', reg.scope))
+          .catch(err => console.log('Service Worker registration failed:', err));
+      });
+    }
+  </script>
+
+</body>
+</html>
